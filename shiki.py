@@ -379,6 +379,12 @@ class myApp(QtWidgets.QMainWindow, GUI.Ui_MainWindow):
         self.statusbar.showMessage(text, 3000)
 
     def update_list(self):
+        for i in range(len(self.listWidget)):
+            a = self.listWidget.item(i)
+            name = re.sub(r'^\d+. ', '', a.text())
+            if a.checkState() == 2:
+                settings.update({name: a.checkState()})
+
         self.listWidget.clear()
         for i in anime:
             self.listWidget.addItem(f'{i[0]}. {i[1]}')
@@ -425,8 +431,11 @@ class myApp(QtWidgets.QMainWindow, GUI.Ui_MainWindow):
 
     def loading(self):
         global settings
-        with open('settings/settings.json', 'r', encoding="utf-8") as f:
-            settings = json.load(f)
+        try:
+            with open('settings/settings.json', 'r', encoding="utf-8") as f:
+                settings = json.load(f)
+        except:
+            pass
 
         self.label_2.setText(f'Профиль: <a href="{link_profile}">{profile_name}</a>')
         self.MyThread.start(5)
